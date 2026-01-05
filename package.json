@@ -6,7 +6,9 @@
 		"build": "rollup -c --environment NODE_ENV:production",
 		"postbuild": "node scripts/postbuild.js",
 		"predev": "rimraf dist",
-		"dev": "rollup -c -w",
+		"dev": "node scripts/dev.js",
+		"dev:watch": "rollup -c -w",
+		"dev:serve": "sirv dist --dev",
 		"start": "sirv dist"
 	},
 	"devDependencies": {
