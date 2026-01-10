@@ -1,0 +1,1337 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H7WWK2CN4M"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-H7WWK2CN4M');
+</script>
+
+<title>Jigsaw Solver by Andrew Stuart</title>
+<meta name="description" content="Jigsaw Sudoku Solver by Andrew Stuart. Shows the logic behind solving Sudoku square by square." />
+<meta property="og:title" content="Jigsaw Sudoku Solver by Andrew Stuart" />
+<meta property="og:type" content="article" />
+<meta property="og:images" content="https://www.sudokuwiki.org/images/solver.jpg" />
+<meta property="og:url" content="https://www.sudokuwiki.org/jigsaw.aspx" />
+<meta property="og:site_name" content="SudokuWiki" />
+<meta property="og:description" content="Jigsaw Sudoku Solver by Andrew Stuart. Shows the logic behind solving Jigsaw Sudoku square by square." />
+<meta name="keywords" content="Sudoku, Solver, Jigsaw, Step-through, puzzle" />
+<link href="css_solvers.css?v=59" rel="stylesheet" type="text/css" />
+<link href="sudoku.css?v=23" rel="stylesheet" type="text/css" />
+<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+<link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+<meta name="msapplication-TileColor" content="#2b5797" />
+<meta name="theme-color" content="#000000" />
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=6478ee2740353a0019caf1aa&product=inline-share-buttons&source=platform" async="async"></script>
+<script type="text/javascript">
+var thedomain = 'https://www.sudokuwiki.org';
+let jig = 1;
+const puztype = 'Jigsaw';
+const solverfile = 'jigsaw';
+const cookiename = 'jigsawcookie';
+const cookieauto = 'jigsawcookieauto';
+if (window.self !== window.top) { window.location.href = '/not_allowed?embref=' + document.referrer + '&emp=' + solverfile; }
+const ssize=9;
+</script>
+<script type="text/javascript" src="js/cookies.js?ver1.2"></script>
+<script type="text/javascript" src="js/tooltip.js?ver1.3"></script>
+<script type="text/javascript" src="js/sud_common5.js?v=3.37"></script>
+<script type="text/javascript" src="js/jigsaw3.js?v=3.03"></script>
+<script type="text/javascript" src="js/wz_jsgraphics.js"></script>
+<script type="text/javascript" src="js/WebSudoku.js?v=7"></script>
+<script data-cfasync="false">
+  window.ramp = window.ramp || {};
+  window.ramp.que = window.ramp.que || [];
+</script>
+<style type="text/css">
+/* Remove arrows from [input]type=number, Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+body #bmc-wbtn {
+    left: 310px;
+}
+</style>
+</head>
+<body>
+
+<div class="gridwrapper910">
+    <div class="titleandbuts">
+	    <table style="width:1140px"><tr>
+	    <td style="width:115px;height:112px;text-align:left;padding-left:5px"><a href="https://www.sudokuwiki.org/Sudoku_Solver_for_Android"><img src="images/SudokuWiki_android.png" alt="Solver App for Android" ></a></td>
+	    <td style="width:280px;height:112px;text-align:left;padding-top:20px;font-size:9pt" id="adcell">
+		    <div style="font-size:11pt;color:#fd4">Sudoku Solver<br>for Android</div>Updated 29 Nov 2025<br /><a href="/Sudoku_Solver_for_Android">Read the update</a>
+	    </td>
+	    <td style="padding-top:10px;text-align:center;">
+            <div class="css-3d-text">SudokuWiki.org</div>
+            <div class="css-3d-text_under">Strategies for Popular Number Puzzles</div>
+        </td>
+	    <td style="width:320px;padding-top:25px;text-align:right">
+
+            <!-- [Desktop/Tablet] Medium Rectangle - Above the Fold (ATF)  -->
+ <div data-pw-desk="med_rect_atf" id="pwDeskMedRectAtf"></div>
+ <script type="text/javascript">
+   window.ramp.que.push(function () {
+       window.ramp.addTag("pwDeskMedRectAtf");
+   })
+ </script>
+
+	    </td>
+	    </tr></table>
+    </div>
+
+
+<script data-name="BMC-Widget"
+		data-cfasync="false"
+		src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js"
+		data-id="str8ts"
+		data-description="Support me on Buy me a coffee!"
+		data-message="" data-color="#ffcc00"
+		data-position="Left" data-x_margin="18"
+		data-y_margin="18"></script>
+
+
+<div class="div900">
+    <table class="t100pc">
+    <tr>
+        <td style="width:480px;padding-top:18px;font-size:9pt;color:#888;font-family: Arial,Helvetica,Garamond, sans-serif;">
+        	Logged out
+        </td>
+        <td style="width:400px;padding-top:18px;color:#8d8;font-size:9pt;text-align:right">
+            Please <a href="sudokufeedback.aspx">report any bugs</a> and feedback welcome
+        </td>
+        <td style="width:80px"></td>
+    </tr>
+    </table>
+</div>
+
+<div class="sidemenu">
+
+		<div class="SRSideMenuB" style="margin-bottom:5px"><ul>
+<li><a href="SPHome.aspx">Sign up for more</a></li>
+</ul>
+</div>
+
+            <div class="SRSideMenuB">
+                <ul>
+                <li id="M0"><a class="scanmenu" href="/Main_Page">Main Page</a></li>
+			    <li id="M28"><a class="scanmenu" href="/Whats_New">What's New</a></li>
+    			<li id="M10"><a class="scanmenu" href="/Strategy_Families">Strategy Overview</a></li>
+                </ul>
+            </div>
+		    <div class="SRSideMenuA">9x9 Solvers</div>
+		    <div class="SRSideMenuB">
+			    <ul>
+			    <li id="M1"><a class="scanmenu" href="/Sudoku.htm">Sudoku Solver</a></li>
+			    <li id="M2" style="color:#ff0;background-color:#333"><a class="scanmenu" href="/Jigsaw.aspx">Jigsaw Solver</a></li>
+			    <li id="M3"><a class="scanmenu" href="/SudokuX.aspx">Sudoku X Solver</a></li>
+			    <li id="M4"><a class="scanmenu" href="/Windoku.aspx">Windoku Solver</a></li>
+			    <li id="M5"><a class="scanmenu" href="/ColourSudoku.aspx">Colour Sudoku</a></li>
+			    <li id="M6"><a class="scanmenu" href="/KillerSudoku.aspx">Killer Solver</a></li>
+			    <li id="M7"><a class="scanmenu" href="/KillerJigsaw.aspx">Killer Jigsaw Solver</a></li>
+                </ul>
+            </div>
+            <div class="SRSideMenuA">6x6 Solvers</div>
+            <div class="SRSideMenuB">
+                <ul>
+		        <li id="M162"><a class="scanmenu" href="/Sudoku6x6.aspx">6x6 Sudoku Solver</a></li>
+		        <li id="M163"><a class="scanmenu" href="/Killer6x6.aspx">6x6 Killer Solver</a></li>
+			    <li id="M8"><a class="scanmenu" href="/KenKen6x6.aspx">6x6 KenKen Solver</a></li>
+			    <li id="M9"><a class="scanmenu" href="/kendoku6x6.aspx">6x6 KenDoku Solver</a></li>
+			    </ul>
+		    </div>
+			<div class="SRSideMenuA">Weekly 'Unsolvable'</div>
+			<div class="SRSideMenuB">
+				<ul>
+				<li id="M11"><a class="scanmenu" href="/Weekly-Sudoku.aspx">Unsolvable Sudoku</a></li>
+				<li id="M12"><a class="scanmenu" href="/Weekly-Jigsaw.aspx">Unsolvable Jigsaw</a></li>
+				<li id="M13"><a class="scanmenu" href="https://www.str8ts.com/weekly_str8ts.aspx">Unsolvable Str8ts</a></li>
+				</ul>
+			</div>
+		    <div class="SRSideMenuA">Puzzles to Play</div>
+		    <div class="SRSideMenuB">
+			    <ul>
+                <li id="M14"><a class="scanmenu" href="/Daily_Sudoku">The Daily Sudoku</a></li>
+                <li id="M15"><a class="scanmenu" href="/Daily_Jigsaw_Sudoku">The Jigsaw Sudoku</a></li>
+                <li id="M16"><a class="scanmenu" href="/Daily_Sudoku_X">The Daily Sudoku X</a></li>
+                <li id="M17"><a class="scanmenu" href="/Daily_Killer_Sudoku.aspx">The Daily Killer</a></li>
+                <li id="M18"><a class="scanmenu" href="/Daily_Mini_Killer_Sudoku.aspx">Daily Mini Killer</a></li>
+                <li id="M19"><a class="scanmenu" href="/Daily_Killer_Jigsaw.aspx">Daily Killer Jigsaw</a></li>
+                <li id="M20"><a class="scanmenu" href="/Daily_Kakuro">The Daily Kakuro</a></li>
+                <li id="M21"><a class="scanmenu" href="/Daily_KenKen.aspx">The Daily KenKen</a></li>
+                <li id="M22"><a class="scanmenu" href="/Daily_Codewords">Daily Codewords</a></li>
+                <li id="M23"><a class="scanmenu" href="https://www.str8ts.com/daily_1to25.aspx">1 to 25</a></li>
+                <li id="M160"><a class="scanmenu" href="/DailyBinairo">The Daily Binairo</a><span style="color:red;font-size:8pt;float:right">New!</span></li>
+                <li id="M24"><a class="scanmenu" href="https://www.letterlicious.com/Letterlicious_Home.aspx">Letterlicious</a></li>
+                <li id="M25"><a class="scanmenu" href="/ACSPuzzles.aspx">Puzzle Packs</a></li>
+			    </ul>
+		    </div>
+		    <div class="SRSideMenuA">Apps</div>
+		    <div class="SRSideMenuB">
+			    <ul>
+			    <li id="M26"><a class="scanmenu" href="/5_Daily_Puzzles_for_the_iPad">5 Daily Puzzles</a></li>
+			    <li id="M27"><a class="scanmenu" href="/Sudoku_Solver_for_Android">SudokuWiki Solver</a></li>
+			    </ul>
+		    </div>
+		    <div class="SRSideMenuA">Str8ts</div>
+		    <div class="SRSideMenuB">
+			    <ul>
+			    <li><a class="spmenu" href="https://www.str8ts.com/str8ts">Home &amp; Rules</a></li>
+			    <li><a class="spmenu" href="https://www.str8ts.com/Daily_str8ts">The Daily Str8ts</a></li>
+			    <li><a class="spmenu" href="https://www.str8ts.com/New_Str8ts_Books">Str8ts Books</a><span style="color:red;font-size:8pt;float:right">New!</span></li>
+			    </ul>
+		    </div>
+		    <div class="SRSideMenuA">Other</div>
+		    <div class="SRSideMenuB">
+			    <ul>
+			    <li id="M29"><a class="scanmenu" href="/LatestArticles.aspx">Latest Articles</a></li>
+			    <li id="M30"><a class="scanmenu" href="/sudokufeedback.aspx">Feedback</a></li>
+			    <li id="M31"><a class="scanmenu" href="/Donations">Donate</a></li>
+                <li id="M32"><a class="scanmenu" href="https://www.syndicatedpuzzles.com/">Syndicated Puzzles</a></li>
+			    </ul>
+		    </div>
+
+
+        <div class="sidemenu">
+            <div class="SRAdvertSide">
+			    <a href="https://www.syndicatedpuzzles.com/SP-newspaperSignUp.asp" target="_spfreedl"><img alt="Free Sudoku and Str8ts for Print" src="/images/freepuz.gif" border="0"></a>
+            </div>
+        </div>
+
+
+</div>
+<div class="contentshell910">
+
+    <table style="width:900px">
+    <tr>
+	    <td style="width:50%" class="solvertitle">
+		    Jigsaw Sudoku Solver
+	    </td>
+	    <td style="width:50%" class="SRGreen cright">
+		    <div style="color:#aaaaaa;font-size:8pt;display:contents">Solve Path now excludes unchecked strategies <span style="color: #fff; font-size: 12pt;padding-right:20px">&#x2193</span></div>
+	    </td>
+    </tr>
+    </table>
+    <table style="width:900px">
+    <tr>
+	    <td style="width:28%;padding-right: 3px; border-top: white 1px solid; padding-left: 3px; padding-bottom: 3px; padding-top: 3px; border-bottom: white 1px solid">
+		    <input style="width: 110px" type="button" class="BButton" name="impbutnew" value ="Enter New Jigsaw" onclick="javascript:design_jigsaw(true);" id="impbutnew">
+		    <input style="width: 110px" type="button" class="BButton" name="impbutthis" value ="Modify this Jigsaw" onclick="javascript:design_jigsaw(false);" id="impbutthis">
+	    </td>
+	    <td class="cright" style="width:78%;padding-right: 3px; border-top: white 1px solid; padding-left: 3px; padding-bottom: 3px; padding-top: 3px; border-bottom: white 1px solid">
+            <input type="button" value="Re-Start" class="SButton" onclick="javascript:restart_board();" id="restart" name="restart">
+		    <input type="button" class="BButton" value="Email/Export" onclick="javascript:email_board();" id="eboard" name="eboard" title="Email a friend with the board you have set up">
+		    <input type="button" class="BButton" value="Import" onclick="javascript:import_sudoku();" id="impbut" name="impbut">
+            <input type="button" class="BButton" name="expbut" value="&gt; Player" onclick="javascript:send_to_player();" id="expbut">
+		    <input type="button" class="BButton" value="Print" onclick="javascript:print_board();" id="pboard" title="Printable Version of the current board">
+            <input type="button" class="YButton" value="Minimise" onclick="min_solutions();" id="pboard6" title="Tries to remove clues">
+		    <input type="button" class="YButton" value="Solution Count" onclick="javascript:test_solutions();" id="pboard3" title="Tests how many solutions a sudoku has">
+		    <input type="button" class="YButton" value ="Grader" id="pboard4" title="Attempts to grade the current puzzle">
+		    <input type="button" class="YButton" value ="Solve Path" id="pboard5" title="Attempts to print the full solve path">
+	    </td>
+    </tr>
+    </table>
+<table style="width:900px">
+<tr>
+	<td class="smallstyle ccenter" style="width:230px;padding-top: 4px">
+		<input type="button" value="Clear" class="SButton" onclick="javascript:blank_board();" id="clearb" name="clearb">
+		<input type="button" value="Save" class="SButton" onclick="javascript:save_my_board();" id="button5" name="button5">
+		<input type="button" value="Reload" class="SButton" onclick="javascript:reload_board();" id="reload" name="reload">
+	</td>
+	<td colspan="3" style="width:460px">
+		<table style="margin:4px 0 0 10px">
+		<tr>
+			<td class="smallest">
+				Candidates can be
+				<input type="radio" name="editmode" autocomplete="off" value="0" checked onclick="javascript:editmode=0;blue_board();showchainhelp()">Edited  or
+				<input type="radio" name="editmode" autocomplete="off" value="1" onclick="javascript:editmode=1; showchainhelp()">Highlighted
+				<input type="radio" name="editmode" value="2" autocomplete="off" onchange="javascript: editmode=2; blue_board(); clear_on_off_color(); showchainhelp()">Chained
+				<input type="radio" name="editmode" value="3" autocomplete="off" onchange="javascript: editmode=3; showchainhelp()">Coloured,&nbsp;
+		        <input type="checkbox" name="showhints" id="showhints" checked onclick="javascript: change_hints();">Shown
+				<br>
+				<div id="colpicker">
+					<div class="colsquare" id="colpicker0" onclick="pickcol(0);"></div>
+					<div class="colsquare" id="colpicker1" onclick="pickcol(1);"></div>
+					<div class="colsquare" id="colpicker2" onclick="pickcol(2);"></div>
+					<div class="colsquare" id="colpicker3" onclick="pickcol(3);"></div>
+					<div class="colsquare" id="colpicker4" onclick="pickcol(4);"></div>
+					<div class="colsquare" id="colpicker5" onclick="pickcol(5);"></div>
+					<div class="colsquare" id="colpicker6" onclick="pickcol(6);"></div>
+					<div class="colsquare" id="colpicker7" onclick="pickcol(7);"></div>
+					<div class="colsquare" id="colpicker8" onclick="pickcol(8);"></div>
+					<div class="colsquare" id="colpicker9" onclick="pickcol(9);"></div>
+				</div>
+			</td>
+		</tr>
+		</table>
+	</td>
+	<td class="smallstyle" style="width:210px;padding-top: 4px">
+		<input type="button" class="RedButton" value="Take Step" onclick="javascript:take_step();" id="takestep" name="takestep" title="Take a Step">
+		<input type="button" class="GButton" value="&lt;&lt;" onclick="javascript:back_step();" id="backstep" name="backstep" title="Back One Step">
+        <select class="basicsel" id="hintonly" style="width:85px;font-size: 8pt;background-color: #aaa;position:relative;top:-1px" onchange="change_hint_mode()">
+            <option value="0">Hints off</option>
+            <option value="1" style="background-color:#a0dba0">Strategy only</option>
+            <option value="2" style="background-color:#c8dba0">Pattern only</option>
+            <option value="3" style="background-color:#a0dbdb">Elims only</option>
+        </select>
+	</td>
+</tr>
+<tr>
+	<td class="smallstyle ccenter">
+		Enter clues <input type="radio" name="enterclues" value="0" checked onclick="javascript:if(!enterclues) enterclues=true;">
+		or solutions <input type="radio" name="enterclues" value="1" onclick="javascript:if( enterclues ) enterclues=false;">
+	</td>
+	<td style="width:10px"></td>
+	<td style="width:425px" class="ctop">
+		<table style="width:100%">
+		<tr>
+			<td class="xcoords">1</td>
+			<td class="xcoords">2</td>
+			<td class="xcoords">3</td>
+			<td class="xcoords">4</td>
+			<td class="xcoords">5</td>
+			<td class="xcoords">6</td>
+			<td class="xcoords">7</td>
+			<td class="xcoords">8</td>
+			<td class="xcoords">9</td>
+		</tr>
+		</table>
+	</td>
+	<td style="width:25px"></td>
+	<td style="width:210px"></td>
+</tr>
+<tr>
+	<td style="width:230px" class="ctop smallstyle">
+		<form action="" name="DataEntry" id="DataEntry" style="margin-bottom: 0px" onkeyup="javascript:add_data(this,event);">
+		<table class="ccenter" id="DTTable">
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D00" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D01" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D02" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D03" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D04" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D05" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D06" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D07" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D08" class="DE1"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D10" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D11" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D12" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D13" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D14" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D15" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D16" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D17" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D18" class="DE1"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D20" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D21" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D22" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D23" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D24" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D25" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D26" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D27" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D28" class="DE1"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D30" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D31" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D32" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D33" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D34" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D35" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D36" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D37" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D38" class="DE2"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D40" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D41" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D42" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D43" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D44" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D45" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D46" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D47" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D48" class="DE2"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D50" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D51" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D52" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D53" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D54" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D55" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D56" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D57" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D58" class="DE2"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D60" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D61" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D62" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D63" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D64" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D65" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D66" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D67" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D68" class="DE1"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D70" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D71" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D72" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D73" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D74" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D75" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D76" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D77" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D78" class="DE1"></td>
+		</tr>
+		<tr>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D80" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D81" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D82" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D83" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D84" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D85" class="DE2"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D86" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D87" class="DE1"></td>
+			<td class="DC"><input size="1" inputmode="numeric" maxlength="1" id="D88" class="DE1"></td>
+		</tr>
+		</table>
+		<table width="100%"><tr>
+		<td style="width:20px"><input type="checkbox" name="autoclear" id="autoclear" onclick="save_auto_clear();"></td><td class="smallstyle" style="color:#aaaaaa;" onmouseover="tooltip.show('Automatically clear off candidates&lt;br&gt;as numbers are entered.&lt;br&gt;Overwrites manual editing.')" onmouseout="tooltip.hide();">Auto Clear</td>
+		</tr></table>
+		<div id="countknown" class="smallstyle ccenter" style="background-color:#333333">Clues+Solved: 0/81</div>
+		<table style="width:100%" cellspacing="1" class="ccenter">
+		<tr>
+			<td class="smallstyle ccenter" style="padding-top: 5px">
+				Step 1: Choose the 'shape'<br>
+				<select name="maptype" class="basicsel" onchange="javascript:change_jigsaw_board();">
+				<option selected="selected">Original 1</option>
+				<option>Original 2</option>
+				<option>Original 3</option>
+				<option>Original 4</option>
+				<option>Original 5</option>
+				<option>Original 6</option>
+				<option>Original 7</option>
+				<option>Original 8</option>
+				<option>Moonlotus</option>
+				<option>Onion</option>
+				<option>Double Mirror</option>
+				<option>Cyndie</option>
+				<option>Tornado</option>
+				<option>Cross</option>
+				<option>Worm</option>
+				<option>Cabbage</option>
+				<option>Stripes</option>
+				<option>H</option>
+				<option>Wednesday</option>
+				<option>ZigZag</option>
+				<option>Legoman Offside</option>
+				<option>Anonymous 1</option>
+				<option>Tim Tang</option>
+				<option>Original 24</option>
+				<option>Original 25</option>
+				<option>Original 26</option>
+				<option>Original 27</option>
+				<option>Original 28</option>
+				<option>Lion</option>
+				<option>Prizes and Axle</option>
+				<option>Wheels 'n Bolts</option>
+				<option>Pipi</option>
+				<option>Custom</option>
+				</select>
+			</td>
+		</tr>
+		<tr id="step2">
+			<td class="smallstyle ccenter" style="padding-top: 5px">
+				Step 2: Pick an example here<br>
+				<select name="Example" onchange="javascript:clear_board(); load_by_list();" class="smallstyle">
+				<option selected="selected">Example 1</option>
+				<option>Example 2</option>
+				<option>Example 3</option>
+				<option>Example 4</option>
+				</select>
+			</td>
+		</tr>
+		</table>
+		</form>
+			<br><br>
+		    <img src="puzimages/SolverKey.png" width="220" height="26" border="0" alt="Key" style="margin-top:5px">
+            <br>
+		    <table class="smallstyleW2" style="width:220px"> 
+		    <tr>
+			    <td colspan="9"><input type="checkbox" value="On" id="chkSB" onchange="show_bivalue();"> Show bi-values cells</td>
+		    </tr>
+		    <tr>
+			    <td colspan="9" style="padding: 4px 0 4px 0;color:#ccc">Show Strong (bi-location) links in</td>
+		    </tr>
+		    <tr>
+			    <td><input type="checkbox" onchange="show_chains(0);" value="On" id="showbox"></td><td colspan="2" class="smallstyleW"> Boxes</td>
+			    <td><input type="checkbox" onchange="show_chains(0);" value="On" id="showrow"></td><td colspan="2" class="smallstyleW"> Rows</td>
+			    <td><input type="checkbox" onchange="show_chains(0);" value="On" id="showcol"></td><td colspan="2" class="smallstyleW"> Columns</td>
+		    </tr>
+		    <tr>
+			    <td class="fsh0"><input type="checkbox" checked value="On" id="cand0" onchange="show_chains(0);"></td>
+			    <td class="fsh1"><input type="checkbox" checked value="On" id="cand1" onchange="show_chains(0);"></td>
+			    <td class="fsh2"><input type="checkbox" checked value="On" id="cand2" onchange="show_chains(0);"></td>
+			    <td class="fsh3"><input type="checkbox" checked value="On" id="cand3" onchange="show_chains(0);"></td>
+			    <td class="fsh4"><input type="checkbox" checked value="On" id="cand4" onchange="show_chains(0);"></td>
+			    <td class="fsh5"><input type="checkbox" checked value="On" id="cand5" onchange="show_chains(0);"></td>
+			    <td class="fsh6"><input type="checkbox" checked value="On" id="cand6" onchange="show_chains(0);"></td>
+			    <td class="fsh7"><input type="checkbox" checked value="On" id="cand7" onchange="show_chains(0);"></td>
+			    <td class="fsh8"><input type="checkbox" checked value="On" id="cand8" onchange="show_chains(0);"></td>
+            </tr>
+            <tr>
+                <td class="smallstyleW" align="center">1</td>
+                <td class="smallstyleW" align="center">2</td>
+                <td class="smallstyleW" align="center">3</td>
+                <td class="smallstyleW" align="center">4</td>
+                <td class="smallstyleW" align="center">5</td>
+                <td class="smallstyleW" align="center">6</td>
+                <td class="smallstyleW" align="center">7</td>
+                <td class="smallstyleW" align="center">8</td>
+                <td class="smallstyleW" align="center">9</td>
+            </tr>
+		    </table>
+			<div id="chainingdiv" style="margin: 0 10px 0 10px;visibility:collapse;display:none;">
+				<input type="checkbox" name="3Dchains" id="3Dchains" onclick="javascript: use3Dchains = !use3Dchains;">Use 3D chains
+				<div style="color:#ffff77;margin:10px 0"><b>Help with candidate chains</b></div>
+				Click on any candidate in the board. The solver will set that candidate as <span class="fshON">true</span> and turn
+				<span class="fshOFF">false</span> all the candidates it can see in the row, column and box. It will then look at all those
+				in turn and follow every inference, ON, OFF, ON, OFF until it can go no further. A network of chains will be built up that could
+				help you solve a difficult point in the puzzle.
+				<br><br>
+				'Use 3D chains' means to follow the chains within a cell. The 'third' dimension of the candidate spread.
+				<br><br>
+				Use the [SHIFT]+(click) on another candidate to add another set of chains to the board. Otherwise the previous chain will be cleared.
+				If you click the same candidate it will change from <span class="fshON">true</span> to <span class="fshOFF">false</span> and
+				the links will be tested again with that inference. All chains will only explore un-chained candidates, ie they will not join up.
+
+			</div>
+
+			<div id="quickhelp" style="margin: 10px 10px 0 0">
+
+				<div style="color:#ffff77"><b>Quick help: The differences</b></div>
+				<br>
+				Jigsaw Sudokus are the same as normal sudoku except for the
+				shapes of the boxes.  Some strategies cannot be used (see below)
+				but there are important new ones such as the <a href="/Law_of_Leftovers">Law of Leftovers</a>.
+				<br>
+				<br>
+				In order to use this solver you need to pick the correct grid shape
+				from the list above or create a custom shape map. <span  style="color:#ffff00"><b>Only then</b></span> type the numbers into the small grid,
+				use the Import button or pick an example from the example list.
+            </div>
+
+            <br>
+            <div class="smallstyle ccenter" style="color:#ff7777">Errors? [CRTL]+[F5] to clear and download the latest script files</div>
+
+		</div>
+	</td>
+	<td style="width:10px" class="ctop">
+		<table>
+		<tr><td class="ycoordsJig">A</td></tr>
+		<tr><td class="ycoordsJig">B</td></tr>
+		<tr><td class="ycoordsJig">C</td></tr>
+		<tr><td class="ycoordsJig">D</td></tr>
+		<tr><td class="ycoordsJig">E</td></tr>
+		<tr><td class="ycoordsJig">F</td></tr>
+		<tr><td class="ycoordsJig">G</td></tr>
+		<tr><td class="ycoordsJig">H</td></tr>
+		<tr><td class="ycoordsJig">J</td></tr>
+		</table>
+	</td>
+	<td style="width:425px" class="ctop">
+
+<div id="myCanvas" style="position:relative">
+
+<table class="bigboard noselect">
+<tr>
+	<td class="OuterJ">
+
+		<table class="bigboard">
+		<tr>
+			<td class="InnerJig" id="a00">&nbsp;</td>
+			<td class="InnerJig" id="a01">&nbsp;</td>
+			<td class="InnerJig" id="a02">&nbsp;</td>
+			<td class="InnerJig" id="a03">&nbsp;</td>
+			<td class="InnerJig" id="a04">&nbsp;</td>
+			<td class="InnerJig" id="a05">&nbsp;</td>
+			<td class="InnerJig" id="a06">&nbsp;</td>
+			<td class="InnerJig" id="a07">&nbsp;</td>
+			<td class="InnerJig" id="a08">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a10">&nbsp;</td>
+			<td class="InnerJig" id="a11">&nbsp;</td>
+			<td class="InnerJig" id="a12">&nbsp;</td>
+			<td class="InnerJig" id="a13">&nbsp;</td>
+			<td class="InnerJig" id="a14">&nbsp;</td>
+			<td class="InnerJig" id="a15">&nbsp;</td>
+			<td class="InnerJig" id="a16">&nbsp;</td>
+			<td class="InnerJig" id="a17">&nbsp;</td>
+			<td class="InnerJig" id="a18">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a20">&nbsp;</td>
+			<td class="InnerJig" id="a21">&nbsp;</td>
+			<td class="InnerJig" id="a22">&nbsp;</td>
+			<td class="InnerJig" id="a23">&nbsp;</td>
+			<td class="InnerJig" id="a24">&nbsp;</td>
+			<td class="InnerJig" id="a25">&nbsp;</td>
+			<td class="InnerJig" id="a26">&nbsp;</td>
+			<td class="InnerJig" id="a27">&nbsp;</td>
+			<td class="InnerJig" id="a28">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a30">&nbsp;</td>
+			<td class="InnerJig" id="a31">&nbsp;</td>
+			<td class="InnerJig" id="a32">&nbsp;</td>
+			<td class="InnerJig" id="a33">&nbsp;</td>
+			<td class="InnerJig" id="a34">&nbsp;</td>
+			<td class="InnerJig" id="a35">&nbsp;</td>
+			<td class="InnerJig" id="a36">&nbsp;</td>
+			<td class="InnerJig" id="a37">&nbsp;</td>
+			<td class="InnerJig" id="a38">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a40">&nbsp;</td>
+			<td class="InnerJig" id="a41">&nbsp;</td>
+			<td class="InnerJig" id="a42">&nbsp;</td>
+			<td class="InnerJig" id="a43">&nbsp;</td>
+			<td class="InnerJig" id="a44">&nbsp;</td>
+			<td class="InnerJig" id="a45">&nbsp;</td>
+			<td class="InnerJig" id="a46">&nbsp;</td>
+			<td class="InnerJig" id="a47">&nbsp;</td>
+			<td class="InnerJig" id="a48">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a50">&nbsp;</td>
+			<td class="InnerJig" id="a51">&nbsp;</td>
+			<td class="InnerJig" id="a52">&nbsp;</td>
+			<td class="InnerJig" id="a53">&nbsp;</td>
+			<td class="InnerJig" id="a54">&nbsp;</td>
+			<td class="InnerJig" id="a55">&nbsp;</td>
+			<td class="InnerJig" id="a56">&nbsp;</td>
+			<td class="InnerJig" id="a57">&nbsp;</td>
+			<td class="InnerJig" id="a58">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a60">&nbsp;</td>
+			<td class="InnerJig" id="a61">&nbsp;</td>
+			<td class="InnerJig" id="a62">&nbsp;</td>
+			<td class="InnerJig" id="a63">&nbsp;</td>
+			<td class="InnerJig" id="a64">&nbsp;</td>
+			<td class="InnerJig" id="a65">&nbsp;</td>
+			<td class="InnerJig" id="a66">&nbsp;</td>
+			<td class="InnerJig" id="a67">&nbsp;</td>
+			<td class="InnerJig" id="a68">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a70">&nbsp;</td>
+			<td class="InnerJig" id="a71">&nbsp;</td>
+			<td class="InnerJig" id="a72">&nbsp;</td>
+			<td class="InnerJig" id="a73">&nbsp;</td>
+			<td class="InnerJig" id="a74">&nbsp;</td>
+			<td class="InnerJig" id="a75">&nbsp;</td>
+			<td class="InnerJig" id="a76">&nbsp;</td>
+			<td class="InnerJig" id="a77">&nbsp;</td>
+			<td class="InnerJig" id="a78">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="InnerJig" id="a80">&nbsp;</td>
+			<td class="InnerJig" id="a81">&nbsp;</td>
+			<td class="InnerJig" id="a82">&nbsp;</td>
+			<td class="InnerJig" id="a83">&nbsp;</td>
+			<td class="InnerJig" id="a84">&nbsp;</td>
+			<td class="InnerJig" id="a85">&nbsp;</td>
+			<td class="InnerJig" id="a86">&nbsp;</td>
+			<td class="InnerJig" id="a87">&nbsp;</td>
+			<td class="InnerJig" id="a88">&nbsp;</td>
+		</tr>
+		</table>
+
+	</td>
+</tr>
+</table>
+</div>
+
+	<div class="w100pc SRSmallCell ccenter">
+		<div class="mycyan smallstyle">Version 2.51.2</div>
+		<iframe id="ifrm" name="ifrm" style="border: solid 1px #666;" frameborder="0" src="ServerSolver.aspx?version=2.51" width="420" height="180" ></iframe>
+		<br>
+		<div style="color:#888">
+		Coordinate system: <input type="radio" checked name="coordmode" value="0" onclick="javascript:if( !coordmode ) coordmode=1;">Letter/Number
+		<input type="radio" name="coordmode" value="1" onclick="javascript:if( coordmode ) coordmode=0;">rYcX<br>
+		<br>
+		See <a href="Strategy_Families" target="_blank">the Strategy Home Page</a> for strategy guides</div>
+
+		<form target="ifrm" action="ServerSolver.aspx?k=0" method="post" id="servsolv" name="servsolv">
+		<input type="hidden" name="ff" value="1">
+		<input type="hidden" name="k" value="0">
+		<input type="hidden" name="gors" value="0">
+		<input type="hidden" name="coordmode" value="">
+		<input type="hidden" name="mapno" value="">
+		<input type="hidden" name="curchain" value="">
+		<input type="hidden" name="curur" value="">
+		<input type="hidden" name="curals" value="">
+		<input type="hidden" name="strat" value="">
+		<input type="hidden" name="fullreport" value="0">
+		<input type="hidden" name="stratmask" value="">
+		<input type="hidden" name="packedpuzzle" id="packedpuzzle" value="">
+		<input type="hidden" name="jigmap" value="">
+		<input type="hidden" name="version" value="2.51">
+		</form>
+        <br>
+	</div>
+	<div class="w100pc ccenter" style="padding:0 25px 0 25px">
+        <div class="sharethis-inline-share-buttons"></div>
+	</div>
+
+	</td>
+	<td class="ctop">
+		<table>
+		<tr><td class="ycoordsJig">1</td></tr>
+		<tr><td class="ycoordsJig">2</td></tr>
+		<tr><td class="ycoordsJig">3</td></tr>
+		<tr><td class="ycoordsJig">4</td></tr>
+		<tr><td class="ycoordsJig">5</td></tr>
+		<tr><td class="ycoordsJig">6</td></tr>
+		<tr><td class="ycoordsJig">7</td></tr>
+		<tr><td class="ycoordsJig">8</td></tr>
+		<tr><td class="ycoordsJig">9</td></tr>
+		</table>
+	</td>
+	<td class="smallstyle ctop">
+
+	    <form action="" name="StratEntry" id="StratEntry" style="margin-bottom: 0px">
+
+		<table style="width:100%" id="TestT">
+		<tr><td></td><td id="T0" class="smallstyle">Check for Solved Cells&nbsp;</td><td id="R0" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td style="height:16px"></td><td id="T1" class="smallstyle">Show Possibles</td><td id="R1" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td style="height:16px"></td><td id="T2" class="smallstyleS">&nbsp;1: <a class="sudmenu" href="Getting_Started" target="_blank">Hidden Singles</a></td><td id="R2" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td style="height:16px"></td><td id="TPAI" class="smallstyleS">&nbsp;2: <a class="sudmenu" href="Naked_Candidates#NP" target="_new">Pairs Naked</a>+<a class="sudmenu" href="Hidden_Candidates#NP" target="_new">Hidden</a></td> <td id="RPAI" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBPPR" value="On"></td><td id="TPPR" class="smallstyleS">&nbsp;3: <a class="sudmenu" href="Intersection_Removal" target="_blank">Pointing Pairs</a></td>	  <td id="RPPR" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBLBR" value="On"></td><td id="TLBR" class="smallstyleS">&nbsp;4: <a class="sudmenu" href="Intersection_Removal#LBR" target="_blank">Box/Line Reduction</a></td> <td id="RLBR" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBTRI" value="On"></td><td id="TTRI" class="smallstyleS">&nbsp;5: <a class="sudmenu" href="Naked_Candidates#NT" target="_new">Triples Naked</a>+<a class="sudmenu" href="Hidden_Candidates#HT" target="_new">Hidden</a></td><td id="RTRI" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td></td><td class="smallstyle" style="color:#ffdd00"><b>Tough Strategies</b></td><td class="cright"><input checked class="sovcb" type="checkbox" id="TogBas" value="On" onclick="javascript:toggle_strats(this,1)"></td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBBUG" value="On"></td><td id="TBUG" class="smallstyleS">&nbsp;6: <a class="sudmenu" href="BUG" target="_new">BUG</a></td>	<td id="RBUG" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBTPP" value="On"></td><td id="TTPP" class="smallstyleS">&nbsp;7: <a class="klnk" href="Triple_Pointing_Pairs" target="_new">Triple Pointing Pairs</a></td>	<td id="RTPP" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBDPS" value="On"></td><td id="TDPS" class="smallstyleS">&nbsp;8: <a class="klnk" href="Double_Pointing_Sets" target="_blank">Double Pointing Sets</a></td>	<td id="RDPS" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBDLB" value="On"></td><td id="TDLB" class="smallstyleS">&nbsp;9: <a class="klnk" href="Double_Line_Box_Reduction" target="_blank">Double Line/Box Reduction</a></td>	<td id="RDLB" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBLOL" value="On"></td><td id="TLOL" class="smallstyleS">10: <a class="klnk" href="Law_of_Leftovers" target="_blank">Law of Leftovers</a></td>	<td id="RLOL" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBXWG" value="On"></td><td id="TXWG" class="smallstyleS">11: <a class="sudmenu" href="X_Wing_Strategy" target="_blank">X-Wing</a></td>	<td id="RXWG" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBYWG" value="On"></td><td id="TYWG" class="smallstyleS">12: <a class="sudmenu" href="Y_Wing_Strategy" target="_blank">Y-Wing</a></td>	<td id="RYWG" class="strat30 smallstyle">&nbsp;</td></tr>
+		<!--tr><td><input checked class="sovcb" type="checkbox" id="CBSLP" value="On"></td><td id="TSLP" class="smallstyleS">13: <a class="sudmenu" href="Rectangle_Elimination" target="_new">Strong Link Pointing Back</a></td>	<td id="RSLP" width="30" align="right" class="smallstyle">&nbsp;</td></tr-->
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBREL" value="On"></td><td id="TREL" class="smallstyleS">13: <a class="sudmenu" href="Rectangle_Elimination" target="_new">Rectangle Elimination</a></td>	<td id="RREL" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBSCN" value="On"></td><td id="TSCN" class="smallstyleS">14: <a class="sudmenu" href="Simple_Colouring" target="_blank">Simple Colouring</a></td>	<td id="RSCN" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBQUD" value="On"></td><td id="TQUD" class="smallstyleS">15: <a class="sudmenu" href="Naked_Candidates#NQ" target="_new">Quads Naked</a>+<a class="sudmenu" href="Hidden_Candidates#HQ" target="_new">Hidden </a></td><td id="RQUD" width="30" align="right" class="smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBSFH" value="On"></td><td id="TSFH" class="smallstyleS">16: <a class="sudmenu" href="Sword_Fish_Strategy" target="_blank">Swordfish</a></td>	<td id="RSFH" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBXYZ" value="On"></td><td id="TXYZ" class="smallstyleS">17: <a class="sudmenu" href="XYZ_Wing" target="_blank">XYZ Wing</a></td>	<td id="RXYZ" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td></td><td class="smallstyle" style="color:#ff9900"><b>Diabolical Strategies</b></td><td class="cright"><input checked class="sovcb" type="checkbox" id="TogTou" value="On" onclick="javascript:toggle_strats(this,2)"></td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBXCY" value="On"></td><td id="TXCY" class="smallstyleS">18: <a class="sudmenu" href="X_Cycles" target="_blank">X-Cycles</a></td>	<td id="RXCY" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBXYC" value="On"></td><td id="TXYC" class="smallstyleS">19: <a class="sudmenu" href="XY_Chains" target="_blank">XY-Chain</a></td>	<td id="RXYC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CB3DM" value="On"></td><td id="T3DM" class="smallstyleS">20: <a class="sudmenu" href="3D_Medusa" target="_blank">3D Medusa</a></td>	<td id="R3DM" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBJFH" value="On"></td><td id="TJFH" class="smallstyleS">21: <a class="sudmenu" href="Jelly_Fish_Strategy" target="_blank">Jellyfish</a></td>	<td id="RJFH" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBWXY" value="On"></td><td id="TWXY" class="smallstyleS">22: <a class="sudmenu" href="WXYZ_Wing" target="_blank">WXYZ Wing</a></td>	<td id="RWXY" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td></td><td class="smallstyle" style="color:#ff5500"><b>Extreme Strategies</b></td><td class="cright"><input checked class="sovcb" type="checkbox" id="TogDia" value="On" onclick="javascript:toggle_strats(this,3)"></td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBGXC" value="On"></td><td id="TGXC" class="smallstyleS">23: <a class="sudmenu" href="Grouped_X_Cycles" target="_blank">Grouped X-Cycles</a></td>	<td id="RGXC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBAIC" value="On"></td><td id="TAIC" class="smallstyleS">24: <a class="sudmenu" href="Alternating_Inference_Chains" target="_blank">Altern. Inference Chains</a></td><td id="RAIC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBALS" value="On"></td><td id="TALS" class="smallstyleS">25: <a class="sudmenu" href="Almost_Locked_Sets" target="_blank">Almost Locked Sets</a></td>	<td id="RALS" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBDBL" value="On"></td><td id="TDBL" class="smallstyleS">26: <a class="sudmenu" href="Death_Blossom" target="_blank">Death Blossom</a></td>	<td id="RDBL" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBDFC" value="On"></td><td id="TDFC" class="smallstyleS">27: <a class="sudmenu" href="Digit_Forcing_Chains" target="_blank">Digit Forcing Chains</a></td>	<td id="RDFC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBNFC" value="On"></td><td id="TNFC" class="smallstyleS">28: <a class="sudmenu" href="Nishio_Forcing_Chains" target="_blank">Nishio Forcing Chains</a></td><td id="RNFC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBCFC" value="On"></td><td id="TCFC" class="smallstyleS">29: <a class="sudmenu" href="Cell_Forcing_Chains" target="_blank">Cell Forcing Chains</a></td>	<td id="RCFC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBUFC" value="On"></td><td id="TUFC" class="smallstyleS">30: <a class="sudmenu" href="Unit_Forcing_Chains" target="_blank">Unit Forcing Chains</a></td>	<td id="RUFC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBPOM" value="On"></td><td id="TPOM" class="smallstyleS">31: <a class="sudmenu" href="Pattern_Overlay" target="_blank">Pattern Overlay Method</a></td>	<td id="RPOM" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBQFC" value="On"></td><td id="TQFC" class="smallstyleS">32: <a class="sudmenu" href="Quad_Forcing_Chains" target="_blank">Quad Forcing Chains</a></td>	<td id="RQFC" class="strat30 smallstyle">&nbsp;</td></tr>
+		<tr><td></td><td class="smallstyle" style="color:#ff2200"><b>"Trial and Error"</b></td><td class="cright">&nbsp;</td></tr>
+		<tr><td><input checked class="sovcb" type="checkbox" id="CBBBB" value="On"></td><td id="TBBB" class="smallstyleS">33: <a class="sudmenu" href="Bowmans_Bingo">Bowman's Bingo</a></td><td id="RBBB" class="strat30 smallstyle">&nbsp;</td></tr>
+		</table>
+        <br>
+		</form>
+                Box numbers referred to in results:
+		        <div class="smallstyle" style="margin:5px 0 0 20px">
+		        <table style="border-spacing:1px" id="Table1" class="ccenter">
+		        <tr>
+			        <td class="JC1" id="jc00"></td>
+			        <td class="JC1" id="jc01"></td>
+			        <td class="JC1" id="jc02"></td>
+			        <td class="JC1" id="jc03"></td>
+			        <td class="JC1" id="jc04"></td>
+			        <td class="JC1" id="jc05"></td>
+			        <td class="JC1" id="jc06"></td>
+			        <td class="JC1" id="jc07"></td>
+			        <td class="JC1" id="jc08"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc10"></td>
+			        <td class="JC1" id="jc11"></td>
+			        <td class="JC1" id="jc12"></td>
+			        <td class="JC1" id="jc13"></td>
+			        <td class="JC1" id="jc14"></td>
+			        <td class="JC1" id="jc15"></td>
+			        <td class="JC1" id="jc16"></td>
+			        <td class="JC1" id="jc17"></td>
+			        <td class="JC1" id="jc18"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc20"></td>
+			        <td class="JC1" id="jc21"></td>
+			        <td class="JC1" id="jc22"></td>
+			        <td class="JC1" id="jc23"></td>
+			        <td class="JC1" id="jc24"></td>
+			        <td class="JC1" id="jc25"></td>
+			        <td class="JC1" id="jc26"></td>
+			        <td class="JC1" id="jc27"></td>
+			        <td class="JC1" id="jc28"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc30"></td>
+			        <td class="JC1" id="jc31"></td>
+			        <td class="JC1" id="jc32"></td>
+			        <td class="JC1" id="jc33"></td>
+			        <td class="JC1" id="jc34"></td>
+			        <td class="JC1" id="jc35"></td>
+			        <td class="JC1" id="jc36"></td>
+			        <td class="JC1" id="jc37"></td>
+			        <td class="JC1" id="jc38"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc40"></td>
+			        <td class="JC1" id="jc41"></td>
+			        <td class="JC1" id="jc42"></td>
+			        <td class="JC1" id="jc43"></td>
+			        <td class="JC1" id="jc44"></td>
+			        <td class="JC1" id="jc45"></td>
+			        <td class="JC1" id="jc46"></td>
+			        <td class="JC1" id="jc47"></td>
+			        <td class="JC1" id="jc48"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc50"></td>
+			        <td class="JC1" id="jc51"></td>
+			        <td class="JC1" id="jc52"></td>
+			        <td class="JC1" id="jc53"></td>
+			        <td class="JC1" id="jc54"></td>
+			        <td class="JC1" id="jc55"></td>
+			        <td class="JC1" id="jc56"></td>
+			        <td class="JC1" id="jc57"></td>
+			        <td class="JC1" id="jc58"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc60"></td>
+			        <td class="JC1" id="jc61"></td>
+			        <td class="JC1" id="jc62"></td>
+			        <td class="JC1" id="jc63"></td>
+			        <td class="JC1" id="jc64"></td>
+			        <td class="JC1" id="jc65"></td>
+			        <td class="JC1" id="jc66"></td>
+			        <td class="JC1" id="jc67"></td>
+			        <td class="JC1" id="jc68"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc70"></td>
+			        <td class="JC1" id="jc71"></td>
+			        <td class="JC1" id="jc72"></td>
+			        <td class="JC1" id="jc73"></td>
+			        <td class="JC1" id="jc74"></td>
+			        <td class="JC1" id="jc75"></td>
+			        <td class="JC1" id="jc76"></td>
+			        <td class="JC1" id="jc77"></td>
+			        <td class="JC1" id="jc78"></td>
+		        </tr>
+		        <tr>
+			        <td class="JC1" id="jc80"></td>
+			        <td class="JC1" id="jc81"></td>
+			        <td class="JC1" id="jc82"></td>
+			        <td class="JC1" id="jc83"></td>
+			        <td class="JC1" id="jc84"></td>
+			        <td class="JC1" id="jc85"></td>
+			        <td class="JC1" id="jc86"></td>
+			        <td class="JC1" id="jc87"></td>
+			        <td class="JC1" id="jc88"></td>
+		        </tr>
+		        </table>
+		        <a href="/Jigsaw_Shape_List">View the Jigsaw Shape List</a>
+	</td>
+</tr>
+</table>
+
+
+
+        <table class="t100pc">
+        <tr>
+	        <td style="width:50%" class="SRSmallCell ctop">
+		        <h2>Welcome to my Jigsaw Sudoku page</h2>
+		        <p>In many ways Jigsaw's are even more interesting than normal Sudokus, although they have not been studied as much.</p>
+		        <p>
+		        All bar a few of the classic Sudoku strategies pertain to Jigsaws, but in the current version I have removed Uniqueness
+		        tests since it is very difficult to determine valid 'Deadly Rectangle' in the jumble of shapes.
+                However the non square shapes open up the opportunity to use some neat strategies only found in Jigsaws such as
+                the <a href="/Law_of_Leftovers">Law of Leftovers</a>, <a href="/Double_Pointing_Sets">Double Pointing Sets</a> and
+                <a href="/Double_Line_Box_Reduction">Double Line/Box Reduction</a>.
+		        Also puzzles are often defeated using simple Pointing Pairs and Box/Line Removal as the shapes
+		        of the boxes lead to more opportunities for these strategies. </p>
+
+                <p>I have now added a page showing <a href="/Jigsaw_Shape_List">all the Jigsaw Shapes</a></p>
+
+		        <p>All feedback, comments, arguments, bug reports and strategy ideas are welcome. There is a
+		        <a href="sudokufeedback.aspx">FEEDBACK</a> form with a column displaying comments and questions.
+		        Many thanks to all the people who have done so and helped improve this solver.</p>
+                <hr>
+		        <b><font color=cyan>New: Version 2.40.2</font> (Sept 5th 2025)</b><br>
+		        Added a proper import popup to allow two types of importing.
+                <br><br>
+		        <b><font color=cyan>New: Version 2.34</font> (Apr 9th 2025)</b><br>
+		        Added 'Hints Mode' next to Take Step. Choose between only revealing the next strategy,
+                just the pattern or just the eliminations.
+                <br><br>
+			    <b><span class="mycyan">New in version 2.28.1</span></b> (14th Nov 2024)<br>
+                New <a href="/Sudoku_String_Definitions">Packed String Definition</a> and transport scheme
+                <br><br>
+				<b><span class="mycyan">New in version 2.20</span></b> (19th June 2024)<br>
+                Custom Jigsaw Shapes! Choose [Enter New Jigsaw] and set up a Jigsaw you found in the wild.
+                <br><br>
+				<b><span class="mycyan">New in version 2.14 - 2.16</span></b> (May 2024)<br>
+				New and much faster Solution Count.<br>
+				New Solution Count and Email popups.<br>
+				Packed strings for transporting candidates allowed on url and import<br>
+
+				Added candidate chaining and colouring.
+				<br><br>
+		        <br>
+		        Added some new 'shape' patterns - see the end of the example pull down list. These are used in the new <a href="ACSPuzzles.aspx">Jigsaw Sudoku Puzzle Packs</a>.
+		        The examples here are gentle, moderate, tough and extreme - four each for each new shape pattern.
+		        <br><br>
+		        <a href="/Sudoku_Solver___Version_History">Version history here</a>
+		        <br><br>
+		        <b><span class="mycyan">New in version 1.38</span></b> (November 21st 2006)
+		        <br>
+		        Release of the Jigsaw Solver
+		        <br><br>
+
+	        </td>
+	        <td class="SRSmallCell ctop" style="width:50%;padding:50px 50px 0 50px">
+			    <div style="padding:7px;font-size:8pt;border:3px solid #009900;border-radius:10px;margin:0px 10px 10px 0">
+				    Help on <a href="/Sudoku_String_Definitions">String Definitions</a> used in this solver for transporting puzzles<br>Now updated and expanded!
+			    </div>
+                <div style="padding:7px;font-size:8pt;border:3px solid #009900;border-radius:10px;margin:0 10px 10px 0">
+					New: Custom jigsaw shapes can now be set up. Read the <a target="_blank" href="/Custom_Jigsaw_Shapes">help page</a>
+				</div>
+				<div id="MyResultA"></div>
+
+
+        	</td>
+        </tr>
+        </table>
+
+	</div>
+	<div id="solvepathdiv"></div>
+
+	<div id="popupbackground" class="popupbackgroundhide">
+		<div id="solutioncount">
+
+			<table class="t100pc">
+			<tr>
+				<td style="width:130px"></td>
+				<td style="width:540px;font-size:16pt;padding:20px 0 15px 0;">All Solutions to a Jigsaw Sudoku</td>
+				<td style="padding-top:8px">
+					<input value="X" type="button" id="closesc" class="cancelpopup" onclick="closeform('popupbackground');">
+				</td>
+			</tr>
+			<tr>
+				<td style="width:130px;padding-left:5px;">
+					<img src="images/sudoA.gif" width="118" height="167" alt="Logo">
+				</td>
+				<td id="out" colspan="2"></td>
+			</tr>
+			<tr>
+				<td>
+				</td>
+				<td style="font-size:8pt;color:#aaa" colspan="2">
+					By Andrew Stuart and Rui Gon&ccedil;alves, Syndicated Puzzles
+				</td>
+			</tr>
+			</table><br><br>
+
+		</div>
+	</div>
+
+	<div id="minimisebackground" class="popupbackgroundhide">
+		<div id="minimisepuzzle">
+
+			<table class="t100pc">
+			<tr>
+				<td style="width:130px"></td>
+				<td style="width:570px;font-size:16pt;padding:20px 0 15px 0;cursor:default">Attempting to minimise the number of clues...</td>
+				<td style="padding-top:8px">
+					<input value="X" type="button" id="closesm" class="cancelpopup" onclick="closeform('minimisebackground');">
+				</td>
+			</tr>
+			<tr>
+				<td style="width:130px;padding-left:5px;">
+					<img src="images/sudoA.gif" width="118" height="167" alt="Logo">
+				</td>
+				<td colspan="2" style="cursor:default">
+                    Warning: Expect long processing if the minima is more than 10 clues away.<br>
+                    Maximum number of clues is 40. Minimum is 17. <br>
+                    Cancel if excessive.<br>
+                    <div id="resbox"></div>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="font-size:8pt;color:#aaa" colspan="2">
+					Removed: <input type="text" readonly id="rec_pos" style="width:50px;text-align:center;font-weight:bold"> 
+                    Recursed <input type="text" readonly id="rec_count" style="width:80px;text-align:center">
+                    <span id="divPulse">Still Going!</span>
+                    <input type="button" class="GButton" value="Cancel" id="cancelbtn">
+                    <span id="finished" style="background-color:#8d8;color:black;font-size:11pt;padding:4px 8px;margin-top:2px">Finished!</span>
+				</td>
+			</tr>
+			</table><br>
+
+		</div>
+	</div>
+
+	<div id="emailhtmlback" class="popupbackgroundhide">
+		<div id="emailhtml" style="padding-left:5px;">
+
+			<table class="t100pc">
+			<tr>
+				<td style="width:110px"></td>
+				<td style="width:557px;font-size:16pt;padding:25px 0 15px 0;">Email your puzzle to a friend</td>
+				<td style="padding-top:12px">
+					<input value="X" type="button" id="closeemail" class="cancelpopup" onclick="closeform('emailhtmlback');">
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<img src="images/sudoA.gif" style="width:100%" alt="Logo">
+				</td>
+				<td colspan="2" style="padding:5px 0 10px 0">
+					<textarea class="emailtextarea" id="emailtextarea" rows=17></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style="font-size:9pt;color:#888" colspan="2">
+					Copy and paste the contents of the green box into your email program and send it off.<br>
+					The links contain the puzzle which will load when your friend
+					visits the Sudoku Solver.
+				</td>
+			</tr>
+			</table><br>
+
+		</div>
+	</div>
+
+<div id="jigsaweditor" class="popupbackgroundhide">
+    <div id="loginform" class="loginformhide">
+    <div id="innerborder">
+
+		<table id="CageTableDesigner">
+		<tr>
+			<td id="PC0" class="JJ1" onclick="javascript:pick_col(0);"></td>
+			<td id="PC1" class="JJ1" onclick="javascript:pick_col(1);"></td>
+			<td id="PC2" class="JJ1" onclick="javascript:pick_col(2);"></td>
+			<td id="PC3" class="JJ1" onclick="javascript:pick_col(3);"></td>
+			<td id="PC4" class="JJ1" onclick="javascript:pick_col(4);"></td>
+			<td id="PC5" class="JJ1" onclick="javascript:pick_col(5);"></td>
+			<td id="PC6" class="JJ1" onclick="javascript:pick_col(6);"></td>
+			<td id="PC7" class="JJ1" onclick="javascript:pick_col(7);"></td>
+			<td id="PC8" class="JJ1" onclick="javascript:pick_col(8);"></td>
+            <td>&nbsp</td>
+		</tr>
+		<tr>
+			<td colspan="10" style="height:15px"></td>
+		</tr>
+		<tr>
+			<td id="KL00" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL01" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL02" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL03" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL04" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL05" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL06" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL07" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL08" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+            <td style="width:38px;padding-top:10px"><input style="width: 25px;background:url(images/rotright.png);" type="button" class="BButton" value ="&nbsp;&nbsp;" onclick="javascript:rotate_design();" id="rotleft" name="rotleft" title="Rotate left 90&deg;"></td>
+		</tr>
+		<tr>
+			<td id="KL10" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL11" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL12" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL13" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL14" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL15" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL16" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL17" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL18" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+            <td style="width:38px;padding-top:10px"><input style="width: 25px;background:url(images/flip.png);" type="button" class="BButton" value ="&nbsp;&nbsp;" onclick="javascript:flip_design();" id="btnflip" name="btnflip" title="Flip hoizontally"></td>
+		</tr>
+		<tr>
+			<td id="KL20" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL21" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL22" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL23" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL24" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL25" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL26" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL27" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL28" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+            <td rowspan="7">&nbsp</td>
+		</tr>
+		<tr>
+			<td id="KL30" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL31" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL32" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL33" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL34" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL35" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL36" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL37" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL38" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		<tr>
+			<td id="KL40" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL41" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL42" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL43" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL44" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL45" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL46" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL47" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL48" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		<tr>
+			<td id="KL50" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL51" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL52" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL53" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL54" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL55" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL56" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL57" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL58" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		<tr>
+			<td id="KL60" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL61" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL62" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL63" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL64" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL65" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL66" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL67" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL68" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		<tr>
+			<td id="KL70" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL71" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL72" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL73" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL74" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL75" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL76" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL77" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL78" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		<tr>
+			<td id="KL80" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL81" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL82" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL83" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL84" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL85" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL86" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL87" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+			<td id="KL88" class="JJ1" onclick="javascript:set_jigsaw_col(this);"></td>
+		</tr>
+		</table>
+
+	<div id="cage_instructions" class="vtop">
+
+		<h2>Custom Jigsaw Sudoku</h2>
+        <p>You can create a custom shape and it will be stored as a cookie.</p>
+		<p>Choose colours in the top row and click on cells on the board.</p>
+		<p>Your Jigsaw is ready when all colours have nine cells</p>
+        <form action="" name="JigEditor" id="JigEditor" style="margin-bottom: 0px">
+		<p>Start with an existing pattern:
+				<select name="mapeditortype" class="smallstyle" onchange="javascript:choose_jigsaw_board();">
+				<option>--- pick existing ---</option>
+				<option>Sudoku</option>
+				<option>Andrew Stuart 1</option>
+				<option>Andrew Stuart 2</option>
+				<option>Andrew Stuart 3</option>
+				<option>Andrew Stuart 4</option>
+				<option>Andrew Stuart 5</option>
+				<option>Andrew Stuart 6</option>
+				<option>Andrew Stuart 7</option>
+				<option>Andrew Stuart 8</option>
+				<option>Moonlotus</option>
+				<option>Onion</option>
+				<option>Double Mirror</option>
+				<option>Cyndie</option>
+				<option>Tornado</option>
+				<option>Cross</option>
+				<option>Worm</option>
+				<option>Cabbage</option>
+				<option>Stripes</option>
+				<option>H</option>
+				<option>Wednesday</option>
+				<option>ZigZag</option>
+				<option>Legoman Offside</option>
+				<option>Anonymous 1</option>
+				<option>Tim Tang</option>
+				<option>Andrew Stuart New 24</option>
+				<option>Andrew Stuart New 25</option>
+				<option>Andrew Stuart New 26</option>
+				<option>Andrew Stuart New 27</option>
+				<option>Andrew Stuart New 28</option>
+				<option>Lion</option>
+				<option>Prizes and Axle</option>
+				<option>Wheels 'n Bolts</option>
+				<option>Pipi</option>
+				<option>Custom</option>
+				</select>
+            </p></form>
+
+		<input type="button" class="GButton" value="Send to Solver" onclick="javascript:send_to_solver();" id="sendsolv" title="Send design to solver">
+		<br>
+        <input type="checkbox" value="On" checked id="clearboardfromeditor" name="clearboardfromeditor"> and clear board of clues
+        <div id="designermessage"></div>
+		<br><br>
+		<table class="t100pc">
+        <tr>
+            <td>
+    			<input type="button" class="BButton" style="padding:2px 10px 1px 10px;font-size:9pt" value="Import" onclick="javascript: import_design();" id="impdesbut" name="impdesbut" title="Import a shape map">&nbsp;&nbsp;&nbsp;
+            </td>
+            <td style="text-align:right">
+			    <input type="button" class="SButton" value="Start over" onclick="javascript: if( window.confirm('Clearing will discard your edits, continue?') ) clear_design();" id="clearbut" name="clearbut" title="Clear this board and start again">
+			    <input type="button" class="GButton" value="Cancel" onclick="closeform('jigsaweditor');" id="closebut" name="closebut" title="Close without saving">
+            </td>
+        </tr>
+		</table>
+        <p style="font-size:9pt;margin-top:3px">To use more than one custom shape load them from the parameter line.
+            Look at the format in [Email This Board] and substitute your 81 character
+            custom map for the shape number.
+            </div>
+        </div>
+	</div>
+	</div>
+
+	<div id="importbackground" class="popupbackgroundhide">
+
+	<div id="jigimporthtml">
+
+		<table class="t100pc">
+		<tr>
+			<td style="width:150px"></td>
+			<td style="width:517px;font-size:16pt;padding:25px 0 15px 0;cursor:default">Import a Jigsaw Sudoku Puzzle</td>
+			<td style="padding-top:12px">
+				<div class="cancelpopupv2" onclick="import_close()">X</div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<img src="images/sudoA.gif" style="width:118px" alt="Logo">
+			</td>
+			<td colspan="2" style="padding:0" id="nodragarea">
+
+                <b>Clues String</b><br>
+                Paste in the clues - 81 characters long<br>
+				<textarea name="cluemapin" id="cluemapin" rows="2" class="emailtextarea"></textarea><br>
+                <br>
+                <b>Shapes - represented by a colour map string</b><br>
+                Paste in a 81 character string (1 to 9)<br>
+                <textarea name="colourmapin" id="colourmapin" rows="2" class="emailtextarea"></textarea><br>
+                <table>
+                    <tr>
+                        <td><input type="button" class="SButton" value="Import!" onclick="import_jigsaw_from_lines();" /></td>
+                        <td id="impErrmsg" style="color:#ff0000;font-weight:bold;padding-left:20px"></td>
+                    </tr>
+                </table>
+                <hr>
+                <br>
+
+                <b>Packed String</b><br>
+                Paste in a 246 character string containing packed data<br>
+				<textarea placeholder="Must start J9B" name="packimport" id="packimport" rows="4" class="emailtextarea"></textarea><br>
+                <table>
+                    <tr>
+                        <td><input type="button" class="SButton" value="Import!" onclick="import_jigsaw_from_packed();" /></td>
+                        <td id="impErrmsg2" style="color:#ff0000;font-weight:bold;padding-left:20px"></td>
+                    </tr>
+                </table>
+                <br>
+                To see an example use the Email button
+                <br><br>
+			</td>
+		</tr>
+		</table>
+
+	</div>
+	</div>
+
+    <div class="footerarea">
+        <div style="border-top:1px solid #666;padding:10px 0 5px 0">
+		    Solver created on 31-Mar-2007. <br>
+		    This page was last modified on 11-Dec-2025<br>
+		    All code and design is copyright and for personal use only and may not be reproduced elsewhere.<br>
+    	    <a href="/Copyright" style="font-size:8pt">Copyright</a> Andrew Stuart @ <a target="_blank" href="https://www.syndicatedpuzzles.com" style="font-size:8pt">Syndicated Puzzles</a>, 2005-2023, <a href="/privacy">Privacy</a>
+
+	    </div>
+    </div>
+</div>
+
+<div id="right2sidead" style="padding:100px 40px">
+<!--  // [desktop/tab]skyscraper_atf: -->
+ <div data-pw-desk="sky_atf" id="pwDeskSkyAtf"></div>
+ <script type="text/javascript">
+   window.ramp.que.push(function () {
+       window.ramp.addTag("pwDeskSkyAtf");
+   })
+ </script>
+</div>
+
+<script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function() {
+    assign_clicks();
+    load_auto_tab();
+    load_board();
+    load_unchecked();
+    restore_sp_button();
+  });
+</script>
+
+
+
+
+    <script data-cfasync="false" async src="//cdn.intergient.com/1024945/74208/ramp.js"></script>
+
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"762e00b9efed439da7e9ba1f068b7b2e","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

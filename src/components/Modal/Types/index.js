@@ -7,6 +7,7 @@ import welcome from './Welcome.svelte';
 import gameover from './GameOver.svelte';
 import nohints from './Nohints.svelte'
 import custom from './Custom.svelte'
+import solver from './Solver.svelte'
 
 export default {
 	share,
@@ -17,5 +18,6 @@ export default {
 	welcome,
 	gameover,
 	nohints,
-	custom
+	custom,
+	solver
 }
