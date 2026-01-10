@@ -27,14 +27,35 @@
 		dropdownVisible = false;
 		game.pause();
 
-		modal.show('confirm', {
-			title: 'Create Own',
-			text: 'Switch to the creator mode to create your own Sudoku puzzle?',
-			button: 'Continue',
-			onHide: game.resume,
-			callback: () => {
-				//game.startCreatorMode();
+		// 在你的代码中调用
+		modal.show('custom', {
+			title: 'Create Sudoku Puzzle',
+			text: 'Fill in the Sudoku puzzle and select difficulty.',
+			button: 'Validate & Save',
+			cancelText: 'Cancel',
+			
+			// 可选的初始序列
+			initialSequence: '530070000600195000098000060800060003400803001700020006060000280000419005000080079',
+			
+			// 可选的默认难度（默认是 'veryeasy'）
+			defaultDifficulty: 'medium', // 'veryeasy', 'easy', 'medium', 'hard'
+			
+			// 关闭时的回调
+			onHide: () => {
+				// console.log('Sudoku modal closed');
 			},
+			
+			// 确认时的回调
+			callback: (result) => {
+				// console.log('Sudoku result:', result);
+				if (result.valid) {
+					// 数独有效，处理结果
+					// console.log('Valid sudoku sequence:', result.sequence);
+					// console.log('Selected difficulty:', result.difficulty); // 'veryeasy', 'easy', 'medium', 'hard'
+					// console.log('Difficulty text:', result.difficultyText); // 'Very Easy', 'Easy', 'Medium', 'Hard'
+					game.createNew(result)
+				} 
+			}
 		});
 	}
 
@@ -53,6 +74,7 @@
 			},
 			validate: validateSencode
 		});
+		
 	}
 
 	function showDropdown() {

@@ -6,6 +6,7 @@ import prompt from './Prompt.svelte';
 import welcome from './Welcome.svelte';
 import gameover from './GameOver.svelte';
 import nohints from './Nohints.svelte'
+import custom from './Custom.svelte'
 
 export default {
 	share,
@@ -15,5 +16,6 @@ export default {
 	prompt,
 	welcome,
 	gameover,
-	nohints
+	nohints,
+	custom
 }
