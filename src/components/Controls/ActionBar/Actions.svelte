@@ -22,12 +22,16 @@
 
 	let isUndoable;
 	let isRedoable;
+	let isBackToBranchable;
 	userGrid.isUndoable.subscribe(value => {
 		isUndoable = value;
 	});
 	userGrid.isRedoable.subscribe(value => {
 		isRedoable = value;
 	});
+	userGrid.isBackToBranchable.subscribe(value => {
+			isBackToBranchable = value;
+		});
 	function handleUndo() {
 		
 		userGrid.undo();
@@ -37,9 +41,23 @@
 		console.log('Redo button clicked');
 		userGrid.redo();
 	}
+	function handleBackToBranch() {
+			console.log('BackToBranch button clicked');
+			userGrid.backToBranch();
+		}
 </script>
 
 <div class="action-buttons space-x-3">
+
+	<button class="btn btn-round btn-badge" disabled={$gamePaused || !isBackToBranchable} title="BackToBranch" on:click={handleBackToBranch}>
+		<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582M4 4h5M4 4l1.5 1.5M20 20v-5h-.582M20 20h-5M20 20l-1.5-1.5M4 12a8 8 0 0116 0M4 12a8 8 0 0016 0" />
+		</svg>
+		
+		{#if isBackToBranchable}
+			<span class="badge" class:badge-primary={isBackToBranchable}>{isBackToBranchable}</span>
+		{/if}
+	</button>
 
 	<button class="btn btn-round" disabled={$gamePaused || !isUndoable} title="Undo" on:click={handleUndo}>
 		<svg class="icon-outline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
