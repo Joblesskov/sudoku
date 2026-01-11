@@ -5,7 +5,7 @@
 	import { slide, fade } from 'svelte/transition';
 	import { DIFFICULTIES, DROPDOWN_DURATION, DIFFICULTY_CUSTOM } from '@sudoku/constants';
 	import { difficulty } from '@sudoku/stores/difficulty';
-
+	import SudokuParser from '@sudoku/stores/solver'
 
 
 	let dropdownVisible = false;
@@ -45,7 +45,13 @@
 			button: 'Continue',
 			onHide: game.resume,
 			callback: (result) => {
-
+				const parser = new SudokuParser();
+				const sequence = parser.parseUrl(result);
+				game.createNew({
+					difficulty: "hard",
+					sequence: sequence
+				})
+				
 			},
 		});
 	}

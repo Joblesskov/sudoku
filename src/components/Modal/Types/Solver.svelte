@@ -53,6 +53,8 @@
 		if (!validateInput()) return;
 		
 		if (data.callback) {
+			// console.log(inputValue);
+			
 			data.callback(inputValue);
 		}
 		hideModal();
