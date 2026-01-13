@@ -1,9 +1,9 @@
 <script>
-	import { slide } from 'svelte/transition';
-	import Switch from '../../Utils/Switch.svelte';
-	import { settings as settingsStore } from '@sudoku/stores/settings';
-	import { MAX_HINTS } from '@sudoku/constants';
-
+	import { slide } from "svelte/transition";
+	import Switch from "../../Utils/Switch.svelte";
+	import { settings as settingsStore } from "@sudoku/stores/settings";
+	import { MAX_HINTS } from "@sudoku/constants";
+	import{num} from "@sudoku/stores/currentValueStore";
 	export let data = {};
 	export let hideModal;
 
@@ -16,7 +16,10 @@
 
 		if (settings.hints < 0) settings.hints = 0;
 		if (settings.hints > MAX_HINTS) settings.hints = MAX_HINTS;
-
+		if($num > settings.hintsLevel){
+			$num = settings.hintsLevel;
+		}
+		// console.log("num",$num);
 		settingsStore.set(settings);
 		hideModal();
 	}
@@ -36,25 +39,45 @@
 
 <div class="flex flex-col mb-6 space-y-3">
 	<!--<Switch bind:checked={settings.darkTheme} text="Enable dark theme" id="dark-theme" />-->
-	<Switch bind:checked={settings.displayTimer} text="Display timer while playing" id="display-timer" />
+	<Switch
+		bind:checked={settings.displayTimer}
+		text="Display timer while playing"
+		id="display-timer"
+	/>
 
-	<Switch bind:checked={hintsLimited} text="Limit the number of hints available" id="hints-limited" />
-	{#if hintsLimited}
-		<div transition:slide class="inline-flex items-center">
-			<label for="hints" class="flex-grow text-lg">Number of available hints</label>
-
-			<input bind:value={settings.hints} class="number-input" id="hints" name="hints" type="number" min="0" max="81" />
-		</div>
-	{/if}
-
-	<Switch bind:checked={settings.highlightCells} text="Highlight cells in same row/column/box" id="highlight-cells" />
-	<Switch bind:checked={settings.highlightSame} text="Highlight cells with the same number" id="highlight-matching" />
-	<Switch bind:checked={settings.highlightConflicting} text="Highlight conflicting numbers" id="highlight-conflicting" />
+	<div transition:slide class="inline-flex items-center">
+		<label for="hints" class="flex-grow text-lg">HintsLevel</label>
+		<input
+			bind:value={settings.hintsLevel}
+			class="number-input"
+			id="hints"
+			name="hints"
+			type="number"
+			min="1"
+			max="9"
+		/>
+	</div>
+	<Switch
+		bind:checked={settings.highlightCells}
+		text="Highlight cells in same row/column/box"
+		id="highlight-cells"
+	/>
+	<Switch
+		bind:checked={settings.highlightSame}
+		text="Highlight cells with the same number"
+		id="highlight-matching"
+	/>
+	<Switch
+		bind:checked={settings.highlightConflicting}
+		text="Highlight conflicting numbers"
+		id="highlight-conflicting"
+	/>
 </div>
 
 <div class="flex justify-end">
 	<button class="btn btn-small mr-3" on:click={hideModal}>Cancel</button>
-	<button class="btn btn-small btn-primary" on:click={handleSave}>Save</button>
+	<button class="btn btn-small btn-primary" on:click={handleSave}>Save</button
+	>
 </div>
 
 <style>

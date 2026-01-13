@@ -1,10 +1,11 @@
 <script>
 	import game from '@sudoku/game';
-	import { validateSencode, validateSencodeDirect } from '@sudoku/sencode';
+
 	import { modal } from '@sudoku/stores/modal';
 	import { slide, fade } from 'svelte/transition';
 	import { DIFFICULTIES, DROPDOWN_DURATION, DIFFICULTY_CUSTOM } from '@sudoku/constants';
 	import { difficulty } from '@sudoku/stores/difficulty';
+	import { validateSencode, validateSencodeDirect } from '@sudoku/sencode';
 
 	let dropdownVisible = false;
 
@@ -33,6 +34,7 @@
 			button: 'Continue',
 			onHide: game.resume,
 			callback: () => {
+				// console.log("22")
 				//game.startCreatorMode();
 			},
 		});
@@ -51,7 +53,6 @@
 			callback: (value) => {
 				game.startCustom(value);
 			},
-			// validate: validateSencode
 			validate: validateSencodeDirect
 		});
 	}

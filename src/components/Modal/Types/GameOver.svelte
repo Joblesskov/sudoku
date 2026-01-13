@@ -4,7 +4,7 @@
 	import { modal } from '@sudoku/stores/modal';
 	import { timer } from '@sudoku/stores/timer';
 	import { difficulty } from '@sudoku/stores/difficulty';
-	import { usedHints } from '@sudoku/stores/hints';
+
 
 	const gameOverCelebration = GAME_OVER_CELEBRATIONS[Math.floor(Math.random() * GAME_OVER_CELEBRATIONS.length)];
 
@@ -69,15 +69,6 @@
 			</svg>
 		</div>
 
-		<div class="item-data">
-			<div class="item-data-label">
-				Hints used:
-			</div>
-
-			<div class="item-data-value">
-				{$usedHints}
-			</div>
-		</div>
 	</div>
 </div>
 
