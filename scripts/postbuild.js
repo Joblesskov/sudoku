@@ -38,16 +38,12 @@ fs.readFile('./src/template.html', (err, templateHtml) => {
 		// Read bundle.js
 		fs.readFile('./dist/bundle.js', (err, bundleJs) => {
 			throwIfError(err);
-
 			// Calculate file hash and get filename using the hash
 			const hashedBundleName = reaver.rev('bundle.js', bundleJs);
-
 			// Replace bundle.js filename in HTML
 			const outputHtml = replaceInBuffer(inlinedHtml, 'bundle.js', hashedBundleName);
-
 			// Write final HTML into index.html
 			fs.writeFile('./dist/index.html', outputHtml, throwIfError);
-
 			// Rename bundle.js
 			fs.rename('./dist/bundle.js', './dist/' + hashedBundleName, throwIfError);
 		});
