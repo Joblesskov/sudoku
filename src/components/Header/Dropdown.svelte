@@ -1,6 +1,6 @@
 <script>
 	import game from '@sudoku/game';
-	import { validateSencode } from '@sudoku/sencode';
+	import { validateSencode, validateSencodeDirect } from '@sudoku/sencode';
 	import { modal } from '@sudoku/stores/modal';
 	import { slide, fade } from 'svelte/transition';
 	import { DIFFICULTIES, DROPDOWN_DURATION, DIFFICULTY_CUSTOM } from '@sudoku/constants';
@@ -51,7 +51,8 @@
 			callback: (value) => {
 				game.startCustom(value);
 			},
-			validate: validateSencode
+			// validate: validateSencode
+			validate: validateSencodeDirect
 		});
 	}
 
