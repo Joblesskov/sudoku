@@ -1,7 +1,7 @@
 <script>
 	import { difficulty as difficultyStore } from '@sudoku/stores/difficulty';
 	import { startNew, startCustom } from '@sudoku/game';
-	import { validateSencode } from '@sudoku/sencode';
+	import { validateSencode, validateSencodeDirect } from '@sudoku/sencode';
 	import { DIFFICULTIES } from '@sudoku/constants';
 
 	export let data = {};
@@ -11,10 +11,10 @@
 	let sencode = data.sencode || '';
 
 	$: enteredSencode = sencode.trim().length !== 0;
-	$: buttonDisabled = enteredSencode ? !validateSencode(sencode) : !DIFFICULTIES.hasOwnProperty(difficulty);
+	$: buttonDisabled = enteredSencode ? !validateSencodeDirect(sencode) : !DIFFICULTIES.hasOwnProperty(difficulty);
 
 	function handleStart() {
-		if (validateSencode(sencode)) {
+		if (validateSencodeDirect(sencode)) {
 			startCustom(sencode);
 		} else {
 			startNew(difficulty);

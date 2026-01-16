@@ -1,6 +1,6 @@
 <script>
 	import { modal } from '@sudoku/stores/modal';
-	import { pauseGame, resumeGame } from '@sudoku/game';
+	import { pauseGame, resumeGame,startGame } from '@sudoku/game';
 
 	function handleShareButton() {
 		pauseGame();
@@ -9,7 +9,7 @@
 
 	function handleSettingsButton() {
 		pauseGame();
-		modal.show('settings', { onHide: resumeGame });
+		modal.show('settings', { onHide: startGame });
 	}
 </script>
 
@@ -27,7 +27,6 @@
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
 		</svg>
 	</button>
-
 </div>
 
 <style>
