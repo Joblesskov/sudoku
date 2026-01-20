@@ -19,7 +19,6 @@
 		if($num > settings.hintsLevel){
 			$num = settings.hintsLevel;
 		}
-		// console.log("num",$num);
 		settingsStore.set(settings);
 		hideModal();
 	}
