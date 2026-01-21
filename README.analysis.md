@@ -41,7 +41,6 @@
 - GitHub Actions（`.github/workflows/deploy.yml`）：推送 master -> npm install -> build -> 写 CNAME -> 用 `JamesIves/github-pages-deploy-action` 发布 `dist` 至 GitHub Pages。
 
 ## 已知缺口与风险
-- 功能未完：撤销/重做、关卡创作模式（UI 按钮占位但无实现）。
 - 提示实现直接对 `userGrid` 求解，若已有矛盾数字可能求解失败或写入不一致；缺少错误处理。
 - 候选存储用 `delete` 删除数组元素，留下空洞；虽不影响 `includes` 渲染，但后续序列化/排序可能异常。
 - 二维码依赖外部 API（需联网），无离线兜底。
